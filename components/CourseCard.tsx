@@ -1,68 +1,55 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
 import { Button } from "@/components/ui/button"
-import { Clock, Users, Star } from "lucide-react"
-import Image from "next/image"
+import { Clock, User } from "lucide-react"
 
 interface CourseCardProps {
-  title: string
-  description: string
-  category: string
-  duration: string
-  level: string
-  instructor: string
-  rating: number
-  enrolledStudents: number
-  image: string
+  curso: {
+    id: number
+    nome: string
+    descricao: string
+    carga_horaria: number
+    professor: { nome: string }
+  }
 }
 
-export function CourseCard({
-  title,
-  description,
-  category,
-  duration,
-  level,
-  instructor,
-  rating,
-  enrolledStudents,
-  image,
-}: CourseCardProps) {
+// Função para obter uma imagem baseada no nome do curso
+function getCourseImage(courseName: string, index: number): string {
+  if (index === 0) {
+    return "https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+  } else if (index === 1) {
+    return "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+  }
+  return "/placeholder.svg?height=200&width=400"
+}
+
+export default function CourseCard({ curso, index = 0 }: CourseCardProps & { index?: number }) {
   return (
-    <Card className="w-full flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl bg-white">
-      <div className="relative w-full h-48">
-        <Image src={image || "/placeholder.svg"} alt={title} layout="fill" objectFit="cover" className="rounded-t-lg" />
+    <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div className="aspect-video w-full overflow-hidden bg-gray-100">
+        <img
+          src={getCourseImage(curso.nome, index) || "/placeholder.svg"}
+          alt={curso.nome}
+          className="h-full w-full object-cover"
+        />
       </div>
-      <CardHeader>
-        <CardTitle className="line-clamp-1 text-xl font-semibold text-black">{title}</CardTitle>
-        <CardDescription className="line-clamp-2 text-sm text-gray-600">{description}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <div className="flex justify-between items-center mb-2">
-          <Badge variant="secondary" className="font-medium text-black">
-            {category}
-          </Badge>
-          <span className="text-sm text-gray-600 flex items-center">
-            <Clock className="w-4 h-4 mr-1" />
-            {duration}
-          </span>
+      <div className="p-4">
+        <h2 className="text-xl font-semibold mb-2">{curso.nome}</h2>
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{curso.descricao}</p>
+        <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4" />
+            <span>{curso.carga_horaria}h</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <User className="h-4 w-4" />
+            <span>Prof. {curso.professor.nome}</span>
+          </div>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-black">{level}</span>
-          <span className="text-sm text-gray-600">{instructor}</span>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between items-center">
-        <div className="flex items-center">
-          <Star className="w-4 h-4 text-yellow-400 mr-1" />
-          <span className="text-sm font-medium text-black">{rating.toFixed(1)}</span>
-        </div>
-        <div className="flex items-center">
-          <Users className="w-4 h-4 mr-1 text-gray-600" />
-          <span className="text-sm text-gray-600">{enrolledStudents} alunos</span>
-        </div>
-        <Button className="font-semibold bg-black text-white hover:bg-gray-800">Inscrever-se</Button>
-      </CardFooter>
-    </Card>
+        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" variant="default">
+          Inscrever-se
+        </Button>
+      </div>
+    </div>
   )
 }
 
